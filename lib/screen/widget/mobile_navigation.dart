@@ -1,4 +1,4 @@
-import 'package:family/screen/home/home.dart';
+
 import 'package:family/screen/main/main_screen.dart';
 import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';

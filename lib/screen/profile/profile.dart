@@ -1,4 +1,4 @@
-import 'package:family/responsive.dart';
+import 'package:family/screen/posts/posts.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
@@ -33,6 +33,11 @@ class Profile extends StatelessWidget {
                         decoration: const BoxDecoration(
                           color: Colors.blue,
                           shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                "https://picsum.photos/250?image=9"),
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                       const Text("Aiman"),
@@ -56,14 +61,18 @@ class Profile extends StatelessWidget {
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) {
-                  return GridTile(
-                    child: Container(
-                      height: size.height * 0.2,
-                      color: Colors.red,
-                      margin: const EdgeInsets.all(1),
-                      child: FittedBox(
-                        child:
-                            Image.network('https://picsum.photos/250?image=9'),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Posts.routeName);
+                    },
+                    child: GridTile(
+                      child: Container(
+                        height: size.height * 0.2,
+                        margin: const EdgeInsets.all(1),
+                        child: FittedBox(
+                          child: Image.network(
+                              'https://picsum.photos/250?image=9'),
+                        ),
                       ),
                     ),
                   );
