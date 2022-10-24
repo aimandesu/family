@@ -1,3 +1,4 @@
+import 'package:family/screen/posts/post_caption.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -10,6 +11,7 @@ class PostComment extends StatefulWidget {
 
 class _PostCommentState extends State<PostComment> {
   bool isExpanded = false;
+  int width = 630;
   final PanelController _pc = PanelController();
 
   @override
@@ -20,7 +22,10 @@ class _PostCommentState extends State<PostComment> {
       left: 0,
       right: 0,
       child: SlidingUpPanel(
-        backdropEnabled: true,
+        defaultPanelState:
+            size.width > width ? PanelState.OPEN : PanelState.CLOSED,
+        backdropEnabled: size.width > width ? false : true,
+        isDraggable: size.width > width ? false : true,
         onPanelOpened: () => setState(() {
           isExpanded = true;
         }),
@@ -28,26 +33,18 @@ class _PostCommentState extends State<PostComment> {
           isExpanded = false;
         }),
         controller: _pc,
-        collapsed: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(25),
+        collapsed: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+              onPressed: () => _pc.open(),
+              icon: isExpanded ? Container() : const Icon(Icons.comment),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () => _pc.open(),
-                icon: const Icon(Icons.comment),
-              ),
-            ],
-          ),
+          ],
         ),
         // color: Colors.white,
         minHeight: size.height * 0.05,
-        maxHeight: size.height * 0.4,
+        maxHeight: size.width > width ? size.height * 0.7 : size.height * 0.6,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(25),
         ),
@@ -57,14 +54,21 @@ class _PostCommentState extends State<PostComment> {
             Stack(
           children: [
             isExpanded
+                ? size.width > width
+                    ? Container()
+                    : const PostCaption()
+                : Container(),
+            isExpanded
                 ? Positioned(
                     top: 0,
                     left: 0,
                     child: SizedBox(
-                      height: size.height * 0.05,
+                      // height: size.height * 0.05,
                       child: IconButton(
                         onPressed: () => _pc.close(),
-                        icon: const Icon(Icons.arrow_back_ios),
+                        icon: size.width > width
+                            ? const Icon(null)
+                            : const Icon(Icons.arrow_back_ios),
                       ),
                     ),
                   )
@@ -76,7 +80,9 @@ class _PostCommentState extends State<PostComment> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: size.height * 0.27,
+                    height: size.width > width
+                        ? size.height * 0.55
+                        : size.height * 0.27,
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
                       itemCount: 10,
@@ -87,35 +93,43 @@ class _PostCommentState extends State<PostComment> {
                       },
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(5),
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    height: size.height * 0.06,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(25),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      height: size.width > width
+                          ? size.width * 0.06
+                          : size.height * 0.06,
+                      width: size.width > width
+                          ? size.width * 3 / 7 * 0.97
+                          : size.width * 1,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(25),
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            width: size.width * 0.9,
-                            child: TextFormField(
-                              decoration: const InputDecoration.collapsed(
-                                hintText: "Comment",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              // width: size.width * 0.9,
+                              child: TextFormField(
+                                decoration: const InputDecoration.collapsed(
+                                  hintText: "Comment",
+                                ),
+                                maxLines: null,
                               ),
-                              maxLines: null,
                             ),
                           ),
-                        ),
-                        const IconButton(
-                          onPressed: null,
-                          icon: Icon(Icons.send),
-                        ),
-                      ],
+                          const IconButton(
+                            onPressed: null,
+                            icon: Icon(Icons.send),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

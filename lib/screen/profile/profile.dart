@@ -31,7 +31,7 @@ class Profile extends StatelessWidget {
                       Container(
                         height: size.height * 0.2,
                         decoration: const BoxDecoration(
-                          color: Colors.blue,
+                          // color: Colors.blue,
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             image: NetworkImage(
