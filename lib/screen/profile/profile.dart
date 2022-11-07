@@ -12,7 +12,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: const [
-          IconButton(onPressed: null, icon: Icon(Icons.line_axis))
+          IconButton(onPressed: null, icon: Icon(Icons.settings))
         ],
       ),
       body: Column(
@@ -40,13 +40,25 @@ class Profile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Text("Aiman"),
+                      const Text(
+                        "Aiman",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ],
                   ),
                 ),
                 Expanded(
                   flex: 2,
-                  child: Container(color: Colors.blue),
+                  child: Container(
+                    color: Colors.blue,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [Text("About You"), Text("Hey this is me ")],
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../posts/posts.dart';
+
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -7,12 +9,12 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return ListView.builder(
-      itemCount: 100,
+      itemCount: 10,
       itemBuilder: (context, index) {
         return Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.blue.shade900,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.5),
@@ -24,8 +26,15 @@ class Home extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const Text(
-                  'Kami suka makan nasi ayam di balik timur Japan kerana rasanya yang enak '),
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Kami suka makan nasi ayam di balik timur Japan kerana rasanya yang enak Kami suka makan nasi ayam di balik timur Japan kerana rasanya yang enak Kami suka makan nasi ayam di balik timur Japan kerana rasanya yang enak ',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               SizedBox(
                 height: size.height * 0.5,
                 width: size.width * 1,
@@ -36,7 +45,17 @@ class Home extends StatelessWidget {
                 ),
               ),
               Row(
-                children: const [Icon(Icons.comment)],
+                children: [
+                  IconButton(
+                    onPressed: (() {
+                      Navigator.of(context).pushNamed(Posts.routeName);
+                    }),
+                    icon: const Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
               )
             ],
           ),

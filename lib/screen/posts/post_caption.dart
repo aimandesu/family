@@ -30,38 +30,45 @@ class PostCaption extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: size.height * 0.15,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        margin: const EdgeInsets.all(5),
-                        height: size.height * 0.075,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                "https://picsum.photos/250?image=9"),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      flex: 4,
-                      child: Text("Kamisato Ayaka"),
-                    ),
-                  ],
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Status",
+                  style: TextStyle(fontSize: 25),
                 ),
               ),
+              // SizedBox(
+              //   height: size.height * 0.2,
+              //   child: Row(
+              //     children: [
+              //       Expanded(
+              //         flex: 2,
+              //         child: Container(
+              //           margin: const EdgeInsets.all(5),
+              //           height: size.height * 0.075,
+              //           decoration: const BoxDecoration(
+              //             shape: BoxShape.circle,
+              //             image: DecorationImage(
+              //               image: NetworkImage(
+              //                   "https://picsum.photos/250?image=9"),
+              //               fit: BoxFit.contain,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       const Expanded(
+              //         flex: 4,
+              //         child: Text("Kamisato Ayaka"),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
                   margin: const EdgeInsets.all(5),
                   child: const Text(
-                      "Saya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam"),
+                      "Saya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka  Saya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka  Saya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka  Saya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam aya suka makan nasi ayam"),
                 ),
               )
             ],
