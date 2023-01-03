@@ -40,7 +40,7 @@ class Home extends StatelessWidget {
                 width: size.width * 1,
                 // margin: const EdgeInsets.all(5),
                 child: FittedBox(
-                  fit: size.width < 550 ? BoxFit.fill : BoxFit.fitHeight,
+                  fit: size.width < 550 ? BoxFit.fill : BoxFit.contain,
                   child: Image.network('https://picsum.photos/250?image=9'),
                 ),
               ),

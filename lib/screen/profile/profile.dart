@@ -50,12 +50,28 @@ class Profile extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Container(
-                    color: Colors.blue,
+                    margin: const EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade800,
+                        borderRadius: BorderRadius.circular(20)),
                     child: Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [Text("About You"), Text("Hey this is me ")],
+                        children: const [
+                          Text(
+                            "About You",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            "Hey this is me ",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

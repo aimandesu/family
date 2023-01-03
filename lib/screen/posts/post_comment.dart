@@ -11,6 +11,7 @@ class PostComment extends StatefulWidget {
 
 class _PostCommentState extends State<PostComment> {
   bool isExpanded = false;
+  bool isPostOpen = false;
   int width = 630;
   final PanelController _pc = PanelController();
 
@@ -22,12 +23,15 @@ class _PostCommentState extends State<PostComment> {
       left: 0,
       right: 0,
       child: SlidingUpPanel(
+        color: Colors.grey.shade800,
+        backdropTapClosesPanel: false,
         defaultPanelState:
             size.width > width ? PanelState.OPEN : PanelState.CLOSED,
         backdropEnabled: size.width > width ? false : true,
         isDraggable: size.width > width ? false : true,
         onPanelOpened: () => setState(() {
           isExpanded = true;
+          isPostOpen = true;
         }),
         onPanelClosed: () => setState(() {
           isExpanded = false;
@@ -38,13 +42,23 @@ class _PostCommentState extends State<PostComment> {
           children: [
             IconButton(
               onPressed: () => _pc.open(),
-              icon: isExpanded ? Container() : const Icon(Icons.comment),
+              icon: isExpanded
+                  ? Container()
+                  : const Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                    ),
             ),
           ],
         ),
         // color: Colors.white,
         minHeight: size.height * 0.05,
-        maxHeight: size.width > width ? size.height * 0.7 : size.height * 0.6,
+        // maxHeight: size.width > width ? size.height * 0.7 : size.height * 0.4,
+        maxHeight: size.width > width
+            ? size.height > 800
+                ? size.height * 0.6
+                : size.height * 0.68
+            : size.height * 0.6,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(25),
         ),
@@ -53,11 +67,13 @@ class _PostCommentState extends State<PostComment> {
             //     ?
             Stack(
           children: [
-            isExpanded
-                ? size.width > width
-                    ? Container()
-                    : const PostCaption()
-                : Container(),
+            // isExpanded
+            //     ? size.width > width
+            //         ? Container()
+            //         : isPostOpen
+            //             ? const PostCaption()
+            //             : Container()
+            //     : Container(),
             isExpanded
                 ? Positioned(
                     top: 0,
@@ -65,10 +81,18 @@ class _PostCommentState extends State<PostComment> {
                     child: SizedBox(
                       // height: size.height * 0.05,
                       child: IconButton(
-                        onPressed: () => _pc.close(),
+                        onPressed: () {
+                          _pc.close();
+                          setState(() {
+                            isPostOpen = false;
+                          });
+                        },
                         icon: size.width > width
                             ? const Icon(null)
-                            : const Icon(Icons.arrow_back_ios),
+                            : const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.white,
+                              ),
                       ),
                     ),
                   )
@@ -79,20 +103,33 @@ class _PostCommentState extends State<PostComment> {
               right: 0,
               child: Column(
                 children: [
-                  SizedBox(
-                    height: size.width > width
-                        ? size.height * 0.55
-                        : size.height * 0.27,
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text("comment $index"),
-                        );
-                      },
-                    ),
-                  ),
+                  isPostOpen || size.width > width
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            height: size.width > width
+                                ? size.height * 0.55
+                                : size.height * 0.47,
+                            width: size.width > width
+                                ? size.width * 3 / 7 * 0.97
+                                : size.width * 1,
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: 100,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text(
+                                    "comment $index is a test. I am trying to render what happens if the text is well kinda long like this one I am currently doing right now lmao",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      : Container(),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
@@ -105,7 +142,9 @@ class _PostCommentState extends State<PostComment> {
                           ? size.width * 3 / 7 * 0.97
                           : size.width * 1,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
+                        border: Border.all(
+                          color: Colors.white,
+                        ),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(25),
                         ),
@@ -117,7 +156,13 @@ class _PostCommentState extends State<PostComment> {
                             child: SizedBox(
                               // width: size.width * 0.9,
                               child: TextFormField(
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                                 decoration: const InputDecoration.collapsed(
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
                                   hintText: "Comment",
                                 ),
                                 maxLines: null,
@@ -126,7 +171,10 @@ class _PostCommentState extends State<PostComment> {
                           ),
                           const IconButton(
                             onPressed: null,
-                            icon: Icon(Icons.send),
+                            icon: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),

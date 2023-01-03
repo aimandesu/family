@@ -17,6 +17,7 @@ class Posts extends StatelessWidget {
       mobile: Stack(
         children: const [
           PostPicture(),
+          PostCaption(),
           PostComment(),
         ],
       ),
