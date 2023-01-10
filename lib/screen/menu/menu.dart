@@ -21,7 +21,7 @@ class _MenuState extends State<Menu> {
       });
     }
 
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Container(

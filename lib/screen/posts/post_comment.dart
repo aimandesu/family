@@ -1,4 +1,3 @@
-import 'package:family/screen/posts/post_caption.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -115,12 +114,12 @@ class _PostCommentState extends State<PostComment> {
                                 : size.width * 1,
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              itemCount: 100,
+                              itemCount: 10,
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   title: Text(
                                     "comment $index is a test. I am trying to render what happens if the text is well kinda long like this one I am currently doing right now lmao",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
@@ -156,7 +155,7 @@ class _PostCommentState extends State<PostComment> {
                             child: SizedBox(
                               // width: size.width * 0.9,
                               child: TextFormField(
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                                 decoration: const InputDecoration.collapsed(

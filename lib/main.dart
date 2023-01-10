@@ -1,8 +1,8 @@
+import 'package:family/screen/login/login.dart';
 import 'package:family/screen/main/main_screen.dart';
 import 'package:family/screen/posts/posts.dart';
 import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.grey.shade900,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MainScreen(),
+      home: const Login(),
       routes: {
         Profile.routeName: (context) => const Profile(),
         MainScreen.routeName: (context) => const MainScreen(),
