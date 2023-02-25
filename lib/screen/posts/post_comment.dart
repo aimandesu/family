@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../../providers/post_models.dart';
+import '../../providers/post_provider.dart';
+
 class PostComment extends StatefulWidget {
-  const PostComment({super.key});
+  final DateTime dateTime;
+  const PostComment({
+    super.key,
+    required this.dateTime,
+  });
 
   @override
   State<PostComment> createState() => _PostCommentState();
@@ -16,6 +24,8 @@ class _PostCommentState extends State<PostComment> {
 
   @override
   Widget build(BuildContext context) {
+    final postProvider = Provider.of<PostProvider>(context);
+
     Size size = MediaQuery.of(context).size;
     return Positioned(
       bottom: 0,
@@ -112,18 +122,45 @@ class _PostCommentState extends State<PostComment> {
                             width: size.width > width
                                 ? size.width * 3 / 7 * 0.97
                                 : size.width * 1,
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text(
-                                    "comment $index is a test. I am trying to render what happens if the text is well kinda long like this one I am currently doing right now lmao",
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                            child: FutureBuilder(
+                              future: postProvider
+                                  .fetchPostIndividualFuture(widget.dateTime),
+                              builder:
+                                  (context, AsyncSnapshot<PostModel> snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data!.comment!.isEmpty) {
+                                  return const Center(
+                                    child: Text(
+                                      'No comments',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } else if (snapshot.hasData &&
+                                    snapshot.data!.comment!.isNotEmpty) {
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: snapshot.data!.comment!.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        title: Text(
+                                          snapshot.data!.comment![index],
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
                               },
                             ),
                           ),

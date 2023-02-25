@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/post_provider.dart';
 
 class PostPicture extends StatelessWidget {
-  const PostPicture({super.key});
+  final DateTime dateTime;
+
+  const PostPicture({super.key, required this.dateTime});
 
   @override
   Widget build(BuildContext context) {
+    final postProvider = Provider.of<PostProvider>(context);
+
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       height: size.height * 1,
       width: size.width * 1,
-      color: Colors.grey.shade900,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Image.network(
-            // "https://i.pinimg.com/originals/5c/71/cd/5c71cdbf20cd3b99d70f6ecb77c5954c.jpg",
-            "https://picsum.photos/250?image=9"
-            // "https://i.pinimg.com/736x/98/78/7a/98787a7df9cd04c434699ebbdccae34c.jpg",
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: postProvider
+            .fetchPostIndividual(dateTime)
+            .image!
+            .length, //this loop how many picture in posts structure
+        itemBuilder: (context, i) {
+          //this one will loop how many times the picture is available
+          return Image(
+            width: size.width * 1,
+            image: FileImage(
+              postProvider.fetchPostIndividual(dateTime).image![i],
             ),
+          );
+        },
       ),
     );
   }

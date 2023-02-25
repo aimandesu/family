@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PostCaption extends StatelessWidget {
-  const PostCaption({super.key});
+  final String status;
+  const PostCaption({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -31,57 +32,57 @@ class PostCaption extends StatelessWidget {
           ],
         ),
         child: SingleChildScrollView(
-            child:
-                // Column(
-                //   children: [
-                // const Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: Text(
-                //     "Status",
-                //     style: TextStyle(fontSize: 25),
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: size.height * 0.2,
-                //   child: Row(
-                //     children: [
-                //       Expanded(
-                //         flex: 2,
-                //         child: Container(
-                //           margin: const EdgeInsets.all(5),
-                //           height: size.height * 0.075,
-                //           decoration: const BoxDecoration(
-                //             shape: BoxShape.circle,
-                //             image: DecorationImage(
-                //               image: NetworkImage(
-                //                   "https://picsum.photos/250?image=9"),
-                //               fit: BoxFit.contain,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //       const Expanded(
-                //         flex: 4,
-                //         child: Text("Kamisato Ayaka"),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            margin: const EdgeInsets.all(5),
-            child: const Text(
-              "Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam Saya suka makan nasi ayamayam",
-              style: TextStyle(
-                color: Colors.white,
+          child:
+              // Column(
+              //   children: [
+              // const Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Text(
+              //     "Status",
+              //     style: TextStyle(fontSize: 25),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: size.height * 0.2,
+              //   child: Row(
+              //     children: [
+              //       Expanded(
+              //         flex: 2,
+              //         child: Container(
+              //           margin: const EdgeInsets.all(5),
+              //           height: size.height * 0.075,
+              //           decoration: const BoxDecoration(
+              //             shape: BoxShape.circle,
+              //             image: DecorationImage(
+              //               image: NetworkImage(
+              //                   "https://picsum.photos/250?image=9"),
+              //               fit: BoxFit.contain,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       const Expanded(
+              //         flex: 4,
+              //         child: Text("Kamisato Ayaka"),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.all(5),
+              child: Text(
+                status,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
-        )
-            //   ],
-            // ),
-            ),
+          //   ],
+          // ),
+        ),
       ),
     );
   }

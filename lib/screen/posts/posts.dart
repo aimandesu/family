@@ -10,30 +10,36 @@ class Posts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    final DateTime dateTime = arguments['dateTime'] as DateTime;
+    final String status = arguments['status'] as String;
+
     Size size = MediaQuery.of(context).size;
     int width = 630;
     return SafeArea(
       child: Scaffold(
           body: Responsive(
         mobile: Stack(
-          children: const [
-            PostPicture(),
-            PostCaption(),
-            PostComment(),
+          children: [
+            PostPicture(dateTime: dateTime),
+            PostCaption(status: status),
+            PostComment(dateTime: dateTime),
           ],
         ),
         tablet: Row(
           children: [
             Expanded(
               flex: size.width > width ? 4 : 5,
-              child: const PostPicture(),
+              child: PostPicture(dateTime: dateTime),
             ),
             Expanded(
               flex: size.width > width ? 3 : 4,
               child: Stack(
-                children: const [
-                  PostCaption(),
-                  PostComment(),
+                children: [
+                  PostCaption(status: status),
+                  PostComment(dateTime: dateTime),
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:family/screen/main/main_screen.dart';
+import 'package:family/screen/posts/newPost/new_post.dart';
 import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -31,9 +32,11 @@ class MobileNavigation extends StatelessWidget {
               icon: const Icon(Icons.feed),
               color: Colors.white,
             ),
-            const IconButton(
-              onPressed: null,
-              icon: Icon(Icons.post_add),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(NewPost.routeName);
+              },
+              icon: const Icon(Icons.post_add),
               color: Colors.white,
             ),
             IconButton(

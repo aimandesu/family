@@ -1,5 +1,9 @@
 import 'package:family/screen/posts/posts.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/post_models.dart';
+import '../../providers/post_provider.dart';
 
 class Profile extends StatelessWidget {
   static const routeName = "/profile";
@@ -8,6 +12,11 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    List<PostModel> newPostsIncoming(BuildContext context) {
+      final postProvider = Provider.of<PostProvider>(context, listen: false);
+      return postProvider.fetchPosts();
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -84,22 +93,32 @@ class Profile extends StatelessWidget {
               height: size.height * 0.7,
               // width: size.width * 1,
               child: GridView.builder(
-                itemCount: 12,
+                itemCount: newPostsIncoming(context).length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed(Posts.routeName);
+                      Navigator.of(context).pushNamed(
+                        Posts.routeName,
+                        arguments: {
+                          'dateTime': newPostsIncoming(context)[index].dateTime,
+                          'status': newPostsIncoming(context)[index].status,
+                        },
+                      );
                     },
                     child: GridTile(
                       child: Container(
                         height: size.height * 0.2,
                         margin: const EdgeInsets.all(1),
                         child: FittedBox(
-                          child: Image.network(
-                              'https://picsum.photos/250?image=9'),
+                          fit: BoxFit.fill,
+                          child: Image(
+                            image: FileImage(
+                              newPostsIncoming(context)[index].image![0],
+                            ),
+                          ),
                         ),
                       ),
                     ),
