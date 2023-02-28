@@ -19,13 +19,12 @@ class PostCaption extends StatelessWidget {
         ),
         // height: size.height * 0.1, //should be flexiable
         decoration: BoxDecoration(
-          color: Colors.grey.shade800,
           borderRadius: const BorderRadius.all(
             Radius.circular(25),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade900,
+              color: Colors.black.withOpacity(0.5),
               offset: const Offset(2, 1),
               blurRadius: 5.0,
             ),
@@ -74,9 +73,7 @@ class PostCaption extends StatelessWidget {
               margin: const EdgeInsets.all(5),
               child: Text(
                 status,
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
+                style: const TextStyle(),
               ),
             ),
           ),

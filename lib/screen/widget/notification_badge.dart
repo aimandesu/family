@@ -7,9 +7,12 @@ class NotificationBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-          color: Colors.blue),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(25),
+        ),
+        color: Theme.of(context).colorScheme.error,
+      ),
       child: const Text("1"),
     );
   }

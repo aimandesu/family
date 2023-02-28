@@ -1,5 +1,7 @@
+import 'package:family/providers/login_sign_provider.dart';
 import 'package:family/screen/main/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,8 +13,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool isDisplayLogin = false;
 
+  //controller
+  final emailController = TextEditingController();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    //provider
+    final loginSignProvider =
+        Provider.of<LoginSignProvider>(context, listen: false);
     // Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
@@ -23,20 +33,38 @@ class _LoginState extends State<Login> {
                 ? const Text(
                     "Login",
                     style: TextStyle(
-                      color: Colors.blue,
                       fontSize: 30,
                     ),
                   )
                 : const Text(
                     "Sign Up",
                     style: TextStyle(
-                      color: Colors.blue,
                       fontSize: 30,
                     ),
                   ),
             const Padding(
               padding: EdgeInsets.all(10),
             ),
+            isDisplayLogin
+                ? Container()
+                : Container(
+                    margin:
+                        const EdgeInsets.only(bottom: 30, left: 15, right: 15),
+                    padding: const EdgeInsets.all(20),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(25),
+                      ),
+                    ),
+                    child: TextFormField(
+                      controller: emailController,
+                      style: const TextStyle(),
+                      decoration: const InputDecoration.collapsed(
+                        hintStyle: TextStyle(),
+                        hintText: "Email",
+                      ),
+                    ),
+                  ),
             Container(
               margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
               padding: const EdgeInsets.all(20),
@@ -44,17 +72,13 @@ class _LoginState extends State<Login> {
                 borderRadius: BorderRadius.all(
                   Radius.circular(25),
                 ),
-                color: Colors.blue,
               ),
               child: TextFormField(
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
+                controller: usernameController,
+                style: const TextStyle(),
                 decoration: const InputDecoration.collapsed(
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                  hintText: "Email",
+                  hintStyle: TextStyle(),
+                  hintText: "Username",
                 ),
               ),
             ),
@@ -66,16 +90,12 @@ class _LoginState extends State<Login> {
                 borderRadius: BorderRadius.all(
                   Radius.circular(25),
                 ),
-                color: Colors.blue,
               ),
               child: TextFormField(
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
+                controller: passwordController,
+                style: const TextStyle(),
                 decoration: const InputDecoration.collapsed(
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                  ),
+                  hintStyle: TextStyle(),
                   hintText: "Password",
                 ),
               ),
@@ -88,17 +108,21 @@ class _LoginState extends State<Login> {
                     child: const Text(
                       "Login",
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 15,
                       ),
                     ),
                   )
-                : const ElevatedButton(
-                    onPressed: null,
-                    child: Text(
+                : ElevatedButton(
+                    onPressed: () {
+                      final email = emailController.text;
+                      final username = usernameController.text;
+                      final password = usernameController.text;
+
+                      loginSignProvider.createUser(username, email, password);
+                    },
+                    child: const Text(
                       "Sign Up",
                       style: TextStyle(
-                        color: Colors.blue,
                         fontSize: 15,
                       ),
                     ),
@@ -110,14 +134,12 @@ class _LoginState extends State<Login> {
                     ? const Text(
                         "No account yet?",
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 15,
                         ),
                       )
                     : const Text(
                         "Already have an account?",
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 15,
                         ),
                       ),
@@ -129,7 +151,6 @@ class _LoginState extends State<Login> {
                         child: const Text(
                           "Sign Up",
                           style: TextStyle(
-                            color: Colors.white,
                             fontSize: 15,
                           ),
                         ),
@@ -141,7 +162,6 @@ class _LoginState extends State<Login> {
                         child: const Text(
                           "login",
                           style: TextStyle(
-                            color: Colors.white,
                             fontSize: 15,
                           ),
                         ),

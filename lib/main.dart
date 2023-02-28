@@ -1,3 +1,4 @@
+import 'package:family/providers/login_sign_provider.dart';
 import 'package:family/providers/post_provider.dart';
 import 'package:family/screen/login/login.dart';
 import 'package:family/screen/main/main_screen.dart';
@@ -7,7 +8,14 @@ import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
   //   statusBarColor: Colors.transparent,
@@ -24,13 +32,27 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => PostProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => LoginSignProvider(),
         )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          canvasColor: Colors.grey.shade900,
+          colorScheme: const ColorScheme(
+            brightness: Brightness.dark,
+            primary: Colors.orange,
+            onPrimary: Colors.blue,
+            secondary: Colors.transparent,
+            onSecondary: Colors.pink,
+            error: Colors.red,
+            onError: Colors.green,
+            background: Colors.yellow,
+            onBackground: Colors.teal,
+            surface: Colors.blueGrey,
+            onSurface: Colors.white,
+          ),
         ),
         debugShowCheckedModeBanner: false,
         home: const Login(),

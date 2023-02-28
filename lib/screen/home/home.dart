@@ -1,4 +1,4 @@
-import 'package:family/providers/post_models.dart';
+import 'package:family/models/post_models.dart';
 import 'package:family/providers/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
         return Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.blue.shade900,
+            // color: Colors.blue.shade900,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.5),
@@ -44,8 +44,8 @@ class Home extends StatelessWidget {
                 child: Text(
                   _newPostsIncoming(context)[index].status.toString(),
                   style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                      // color: Colors.white,
+                      ),
                 ),
               ),
               SizedBox(
@@ -88,7 +88,7 @@ class Home extends StatelessWidget {
                     }),
                     icon: const Icon(
                       Icons.comment,
-                      color: Colors.white,
+                      // color: Colors.white,
                     ),
                   ),
                 ],

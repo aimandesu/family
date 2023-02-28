@@ -2,7 +2,7 @@ import 'package:family/screen/posts/posts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/post_models.dart';
+import '../../models/post_models.dart';
 import '../../providers/post_provider.dart';
 
 class Profile extends StatelessWidget {
@@ -51,7 +51,6 @@ class Profile extends StatelessWidget {
                       ),
                       const Text(
                         "Aiman",
-                        style: TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -61,7 +60,7 @@ class Profile extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(left: 10),
                     decoration: BoxDecoration(
-                        color: Colors.grey.shade800,
+                        color: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(20)),
                     child: Padding(
                       padding: const EdgeInsets.all(15),
@@ -70,15 +69,11 @@ class Profile extends StatelessWidget {
                         children: const [
                           Text(
                             "About You",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: TextStyle(),
                           ),
                           Text(
                             "Hey this is me ",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: TextStyle(),
                           ),
                         ],
                       ),
@@ -92,37 +87,103 @@ class Profile extends StatelessWidget {
             child: SizedBox(
               height: size.height * 0.7,
               // width: size.width * 1,
-              child: GridView.builder(
-                itemCount: newPostsIncoming(context).length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        Posts.routeName,
-                        arguments: {
-                          'dateTime': newPostsIncoming(context)[index].dateTime,
-                          'status': newPostsIncoming(context)[index].status,
-                        },
-                      );
-                    },
-                    child: GridTile(
-                      child: Container(
-                        height: size.height * 0.2,
-                        margin: const EdgeInsets.all(1),
-                        child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Image(
-                            image: FileImage(
-                              newPostsIncoming(context)[index].image![0],
-                            ),
-                          ),
+              child: FutureBuilder(
+                future: Provider.of<PostProvider>(context, listen: false)
+                    .fetchPostsFuture(),
+                builder: (context, AsyncSnapshot<List<PostModel>> snapshot) {
+                  if (snapshot.hasData && snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No Posts Found',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 20,
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return GridView.builder(
+                      itemCount: newPostsIncoming(context).length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              Posts.routeName,
+                              arguments: {
+                                'dateTime':
+                                    newPostsIncoming(context)[index].dateTime,
+                                'status':
+                                    newPostsIncoming(context)[index].status,
+                              },
+                            );
+                          },
+                          onLongPress: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.circular(20.0),
+                                  // ),
+                                  child: SizedBox(
+                                    child: Stack(
+                                      children: [
+                                        Image(
+                                          image: FileImage(
+                                            newPostsIncoming(context)[index]
+                                                .image![0],
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.update,
+                                                size: size.height * 0.05,
+                                              ),
+                                              Icon(
+                                                Icons.delete_forever,
+                                                size: size.height * 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: GridTile(
+                            child: Container(
+                              height: size.height * 0.2,
+                              margin: const EdgeInsets.all(1),
+                              child: FittedBox(
+                                fit: BoxFit.fill,
+                                child: Image(
+                                  image: FileImage(
+                                    newPostsIncoming(context)[index].image![0],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                 },
               ),
             ),

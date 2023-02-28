@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:family/providers/post_models.dart';
+import 'package:family/models/post_models.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +28,21 @@ class _NewPostState extends State<NewPost> {
       source: ImageSource.camera,
     );
 
+    if (imageFile == null) {
+      return;
+    }
+
     setState(() {
-      _takePhoto!.add(File(imageFile!.path));
+      _takePhoto!.add(File(imageFile.path));
     });
     // final savedImage = await File(imageFile!.path);
+  }
+
+  void _removePicture(int index) {
+    setState(() {
+      _takePhoto = _takePhoto!..removeAt(index);
+    });
+    Navigator.of(context).pop();
   }
 
   // Future<void> _selectPicture() async {}
@@ -44,6 +55,7 @@ class _NewPostState extends State<NewPost> {
   @override
   Widget build(BuildContext context) {
     var postModel = PostModel(
+      username: '',
       dateTime: DateTime.now(),
       status: statusController.text,
       image: _takePhoto,
@@ -74,7 +86,7 @@ class _NewPostState extends State<NewPost> {
                     bottom: 5,
                   ),
                   width: size.width * 1,
-                  color: Colors.blue.shade900,
+                  color: Theme.of(context).colorScheme.primary,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -82,7 +94,6 @@ class _NewPostState extends State<NewPost> {
                         "Status",
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.white,
                         ),
                       ),
                       SingleChildScrollView(
@@ -92,9 +103,7 @@ class _NewPostState extends State<NewPost> {
                           ),
                           child: TextFormField(
                             controller: statusController,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: const TextStyle(),
                             maxLines: null,
                             textAlign: TextAlign.justify,
                             decoration:
@@ -109,22 +118,54 @@ class _NewPostState extends State<NewPost> {
             ),
             Positioned(
               top: 90,
-              child: Container(
+              child: SizedBox(
                 width: size.width * 1,
                 height: size.height * 0.7,
                 child: _takePhoto!.isEmpty
                     ? IconButton(
                         iconSize: size.height * 0.2,
-                        onPressed: () {},
-                        icon: const Icon(Icons.no_photography),
+                        onPressed: _takePicture,
+                        icon: const Icon(Icons.photo),
                       )
                     : ListView.builder(
                         itemCount: _takePhoto!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          return Image(
-                            width: size.width * 1,
-                            image: FileImage(_takePhoto![index]),
+                          return GestureDetector(
+                            onLongPress: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 60),
+                                    child: Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                      ),
+                                      child: SizedBox(
+                                        height: 70,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: TextButton(
+                                            onPressed: () =>
+                                                _removePicture(index),
+                                            child: const Text(
+                                              'Remove picture',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Image(
+                              width: size.width * 1,
+                              image: FileImage(_takePhoto![index]),
+                            ),
                           );
                         },
                       ),
@@ -137,7 +178,7 @@ class _NewPostState extends State<NewPost> {
               child: Container(
                 margin: const EdgeInsets.all(10),
                 width: size.width * 1,
-                color: Colors.blue.shade900,
+                color: Theme.of(context).colorScheme.primary,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -145,19 +186,20 @@ class _NewPostState extends State<NewPost> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         IconButton(
-                          color: Colors.blue,
                           onPressed: _takePicture,
                           icon: const Icon(Icons.camera),
                         ),
+                        const IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.map),
+                        ),
                         IconButton(
-                          color: Colors.blue,
                           onPressed: () {},
                           icon: const Icon(Icons.photo),
                         ),
                       ],
                     ),
                     IconButton(
-                      color: Colors.blue,
                       onPressed: newPost,
                       icon: const Icon(Icons.post_add),
                     ),

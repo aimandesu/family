@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../providers/post_models.dart';
+import '../../models/post_models.dart';
 import '../../providers/post_provider.dart';
 
 class PostComment extends StatefulWidget {
@@ -32,7 +32,7 @@ class _PostCommentState extends State<PostComment> {
       left: 0,
       right: 0,
       child: SlidingUpPanel(
-        color: Colors.grey.shade800,
+        color: Theme.of(context).colorScheme.surface,
         backdropTapClosesPanel: false,
         defaultPanelState:
             size.width > width ? PanelState.OPEN : PanelState.CLOSED,
@@ -55,7 +55,6 @@ class _PostCommentState extends State<PostComment> {
                   ? Container()
                   : const Icon(
                       Icons.comment,
-                      color: Colors.white,
                     ),
             ),
           ],
@@ -100,7 +99,6 @@ class _PostCommentState extends State<PostComment> {
                             ? const Icon(null)
                             : const Icon(
                                 Icons.arrow_back_ios,
-                                color: Colors.white,
                               ),
                       ),
                     ),
@@ -133,7 +131,6 @@ class _PostCommentState extends State<PostComment> {
                                     child: Text(
                                       'No comments',
                                       style: TextStyle(
-                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontStyle: FontStyle.italic,
                                         fontSize: 20,
@@ -149,9 +146,7 @@ class _PostCommentState extends State<PostComment> {
                                       return ListTile(
                                         title: Text(
                                           snapshot.data!.comment![index],
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
+                                          style: const TextStyle(),
                                         ),
                                       );
                                     },
@@ -179,8 +174,9 @@ class _PostCommentState extends State<PostComment> {
                           : size.width * 1,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
+                        color: Theme.of(context).colorScheme.onSecondary,
                         borderRadius: const BorderRadius.all(
                           Radius.circular(25),
                         ),
@@ -192,13 +188,15 @@ class _PostCommentState extends State<PostComment> {
                             child: SizedBox(
                               // width: size.width * 0.9,
                               child: TextFormField(
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                                decoration: const InputDecoration.collapsed(
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface),
+                                decoration: InputDecoration.collapsed(
                                   hintStyle: TextStyle(
-                                    color: Colors.white,
-                                  ),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   hintText: "Comment",
                                 ),
                                 maxLines: null,
@@ -209,7 +207,6 @@ class _PostCommentState extends State<PostComment> {
                             onPressed: null,
                             icon: Icon(
                               Icons.send,
-                              color: Colors.white,
                             ),
                           ),
                         ],

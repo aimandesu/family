@@ -16,7 +16,7 @@ class MobileNavigation extends StatelessWidget {
       right: 15,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: const BorderRadius.all(
             Radius.circular(20),
           ),
@@ -30,21 +30,18 @@ class MobileNavigation extends StatelessWidget {
                 Navigator.of(context).pushNamed(MainScreen.routeName);
               },
               icon: const Icon(Icons.feed),
-              color: Colors.white,
             ),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(NewPost.routeName);
               },
               icon: const Icon(Icons.post_add),
-              color: Colors.white,
             ),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(Profile.routeName);
               },
               icon: const Icon(Icons.people),
-              color: Colors.white,
             ),
           ],
         ),

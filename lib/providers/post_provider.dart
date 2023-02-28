@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'post_models.dart';
+import '../models/post_models.dart';
 
 class PostProvider with ChangeNotifier {
   List<PostModel> _posts = [];
@@ -15,6 +15,11 @@ class PostProvider with ChangeNotifier {
   }
 
   List<PostModel> fetchPosts() {
+    return posts;
+  }
+
+  //change to future build
+  Future<List<PostModel>> fetchPostsFuture() async {
     return posts;
   }
 
