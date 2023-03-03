@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../models/post_models.dart';
 import '../../providers/post_provider.dart';
 
 class PostComment extends StatefulWidget {
   final DateTime dateTime;
+  final String username;
+
   const PostComment({
     super.key,
+    required this.username,
     required this.dateTime,
   });
 
@@ -24,8 +26,6 @@ class _PostCommentState extends State<PostComment> {
 
   @override
   Widget build(BuildContext context) {
-    final postProvider = Provider.of<PostProvider>(context);
-
     Size size = MediaQuery.of(context).size;
     return Positioned(
       bottom: 0,
@@ -121,12 +121,13 @@ class _PostCommentState extends State<PostComment> {
                                 ? size.width * 3 / 7 * 0.97
                                 : size.width * 1,
                             child: FutureBuilder(
-                              future: postProvider
-                                  .fetchPostIndividualFuture(widget.dateTime),
-                              builder:
-                                  (context, AsyncSnapshot<PostModel> snapshot) {
+                              future: Provider.of<PostProvider>(context,
+                                      listen: false)
+                                  .readPostIndividual(
+                                      widget.username, widget.dateTime),
+                              builder: (context, snapshot) {
                                 if (snapshot.hasData &&
-                                    snapshot.data!.comment!.isEmpty) {
+                                    snapshot.data!.first['comment']!.isEmpty) {
                                   return const Center(
                                     child: Text(
                                       'No comments',
@@ -138,14 +139,17 @@ class _PostCommentState extends State<PostComment> {
                                     ),
                                   );
                                 } else if (snapshot.hasData &&
-                                    snapshot.data!.comment!.isNotEmpty) {
+                                    snapshot
+                                        .data!.first['comment']!.isNotEmpty) {
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
-                                    itemCount: snapshot.data!.comment!.length,
+                                    itemCount:
+                                        snapshot.data!.first['comment']!.length,
                                     itemBuilder: (context, index) {
                                       return ListTile(
                                         title: Text(
-                                          snapshot.data!.comment![index],
+                                          snapshot
+                                              .data!.first['comment']![index],
                                           style: const TextStyle(),
                                         ),
                                       );

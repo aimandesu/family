@@ -14,4 +14,12 @@ class PostModel {
     required this.image,
     required this.comment,
   });
+
+  Map<String, dynamic> toJson(List<String> imageUrl) => {
+        'username': username,
+        'dateTime': dateTime,
+        'status': status,
+        'image': imageUrl,
+        'comment': comment,
+      };
 }

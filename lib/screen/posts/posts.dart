@@ -15,6 +15,7 @@ class Posts extends StatelessWidget {
 
     final DateTime dateTime = arguments['dateTime'] as DateTime;
     final String status = arguments['status'] as String;
+    final String username = arguments['username'] as String;
 
     Size size = MediaQuery.of(context).size;
     int width = 630;
@@ -23,23 +24,23 @@ class Posts extends StatelessWidget {
           body: Responsive(
         mobile: Stack(
           children: [
-            PostPicture(dateTime: dateTime),
+            PostPicture(username: username, dateTime: dateTime),
             PostCaption(status: status),
-            PostComment(dateTime: dateTime),
+            PostComment(username: username, dateTime: dateTime),
           ],
         ),
         tablet: Row(
           children: [
             Expanded(
               flex: size.width > width ? 4 : 5,
-              child: PostPicture(dateTime: dateTime),
+              child: PostPicture(username: username, dateTime: dateTime),
             ),
             Expanded(
               flex: size.width > width ? 3 : 4,
               child: Stack(
                 children: [
                   PostCaption(status: status),
-                  PostComment(dateTime: dateTime),
+                  PostComment(username: username, dateTime: dateTime),
                 ],
               ),
             ),

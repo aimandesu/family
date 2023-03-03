@@ -14,9 +14,50 @@ class _LoginState extends State<Login> {
   bool isDisplayLogin = false;
 
   //controller
-  final emailController = TextEditingController();
   final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  //function
+  void _showDialog(bool option) {
+    String message = '';
+    option == false
+        ? message = 'Account has been created'
+        : message = 'username has been used';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: option == false
+            ? const Text('Succeed')
+            : const Text('An Error Occured'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Okay'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void loginSucces(bool authentication) {
+    if (authentication) {
+      Navigator.of(context).pushNamed(MainScreen.routeName);
+    } else {
+      _showDialog(authentication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +143,15 @@ class _LoginState extends State<Login> {
             ),
             isDisplayLogin
                 ? ElevatedButton(
-                    onPressed: (() {
-                      Navigator.of(context).pushNamed(MainScreen.routeName);
-                    }),
+                    onPressed: () async {
+                      final username = usernameController.text;
+                      final password = passwordController.text;
+
+                      final succeed =
+                          await loginSignProvider.loginUser(username, password);
+
+                      loginSucces(succeed);
+                    },
                     child: const Text(
                       "Login",
                       style: TextStyle(
@@ -113,12 +160,19 @@ class _LoginState extends State<Login> {
                     ),
                   )
                 : ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       final email = emailController.text;
                       final username = usernameController.text;
-                      final password = usernameController.text;
+                      final password = passwordController.text;
 
-                      loginSignProvider.createUser(username, email, password);
+                      final userAvailablity =
+                          await loginSignProvider.findUserAvailable(username);
+
+                      if (!userAvailablity) {
+                        loginSignProvider.createUser(username, email, password);
+                      }
+
+                      _showDialog(userAvailablity);
                     },
                     child: const Text(
                       "Sign Up",

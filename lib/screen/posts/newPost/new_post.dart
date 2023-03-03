@@ -26,6 +26,7 @@ class _NewPostState extends State<NewPost> {
     final picker = ImagePicker();
     final imageFile = await picker.pickImage(
       source: ImageSource.camera,
+      imageQuality: 10,
     );
 
     if (imageFile == null) {
@@ -55,7 +56,7 @@ class _NewPostState extends State<NewPost> {
   @override
   Widget build(BuildContext context) {
     var postModel = PostModel(
-      username: '',
+      username: 'aiman',
       dateTime: DateTime.now(),
       status: statusController.text,
       image: _takePhoto,
@@ -66,7 +67,7 @@ class _NewPostState extends State<NewPost> {
 
     void newPost() {
       final postProvider = Provider.of<PostProvider>(context, listen: false);
-      postProvider.addPost(postModel);
+      postProvider.createPost(postModel);
       Navigator.of(context).pop();
     }
 
