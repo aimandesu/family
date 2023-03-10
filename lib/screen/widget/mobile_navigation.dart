@@ -3,6 +3,8 @@ import 'package:family/screen/posts/newPost/new_post.dart';
 import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 
+import '../chat/chat.dart';
+
 class MobileNavigation extends StatelessWidget {
   const MobileNavigation({
     Key? key,
@@ -42,6 +44,12 @@ class MobileNavigation extends StatelessWidget {
                 Navigator.of(context).pushNamed(Profile.routeName);
               },
               icon: const Icon(Icons.people),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(Chat.routeName);
+              },
+              icon: const Icon(Icons.message),
             ),
           ],
         ),

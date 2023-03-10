@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
     if (authentication) {
       Navigator.of(context).pushNamed(MainScreen.routeName);
     } else {
-      _showDialog(authentication);
+      // _showDialog(authentication);
     }
   }
 
@@ -86,6 +86,23 @@ class _LoginState extends State<Login> {
             const Padding(
               padding: EdgeInsets.all(10),
             ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(25),
+                ),
+              ),
+              child: TextFormField(
+                controller: emailController,
+                style: const TextStyle(),
+                decoration: const InputDecoration.collapsed(
+                  hintStyle: TextStyle(),
+                  hintText: "Email",
+                ),
+              ),
+            ),
             isDisplayLogin
                 ? Container()
                 : Container(
@@ -98,31 +115,14 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     child: TextFormField(
-                      controller: emailController,
+                      controller: usernameController,
                       style: const TextStyle(),
                       decoration: const InputDecoration.collapsed(
                         hintStyle: TextStyle(),
-                        hintText: "Email",
+                        hintText: "Username",
                       ),
                     ),
                   ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25),
-                ),
-              ),
-              child: TextFormField(
-                controller: usernameController,
-                style: const TextStyle(),
-                decoration: const InputDecoration.collapsed(
-                  hintStyle: TextStyle(),
-                  hintText: "Username",
-                ),
-              ),
-            ),
             // Spacer(),
             Container(
               margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
@@ -144,11 +144,11 @@ class _LoginState extends State<Login> {
             isDisplayLogin
                 ? ElevatedButton(
                     onPressed: () async {
-                      final username = usernameController.text;
+                      final email = emailController.text;
                       final password = passwordController.text;
 
                       final succeed =
-                          await loginSignProvider.loginUser(username, password);
+                          await loginSignProvider.loginUser(email, password);
 
                       loginSucces(succeed);
                     },

@@ -1,25 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignProvider with ChangeNotifier {
-  Future<bool> createUser(
-    String username,
+  final _auth = FirebaseAuth.instance;
+
+  Future<void> createUser(
+    String username, //should be from firebase
     String email,
     String password,
   ) async {
-    final userSignUp =
-        FirebaseFirestore.instance.collection('user').doc(username);
+    UserCredential userCredential;
+    String? token;
+
+    userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    await FirebaseMessaging.instance.getToken().then((value) => token = value);
+
+    final userSignUp = FirebaseFirestore.instance
+        .collection('user')
+        .doc(userCredential.user!.uid);
 
     // if (await findUserAvailable(username)) {
     //   return true;
     // }
 
     final user = UserModel(
+      userUID: userCredential.user!.uid,
       username: username,
       email: email,
       name: '',
       password: password,
+      token: token as String,
+      image: '',
     );
 
     final json = user.toJson();
@@ -31,7 +49,7 @@ class LoginSignProvider with ChangeNotifier {
     // };
 
     await userSignUp.set(json);
-    return false;
+    // return false;
   }
 
   Future<bool> findUserAvailable(String username) async {
@@ -41,19 +59,26 @@ class LoginSignProvider with ChangeNotifier {
     return userAvailable.exists;
   }
 
-  Future<bool> loginUser(String username, String password) async {
-    if (username == '' && password == '') {
+  Future<bool> loginUser(String email, String password) async {
+    if (email == '' && password == '') {
       return false;
     }
 
+    UserCredential userCredential;
+
+    userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
     bool decision = false;
-    String? getUsername;
+    String? getEmail;
     String? getPassword;
     final collectionUser = FirebaseFirestore.instance.collection('user');
-    final eachUser = await collectionUser.doc(username).get();
+    final eachUser = await collectionUser.doc(userCredential.user!.uid).get();
     eachUser.data()?.forEach((key, value) {
-      if ((key == 'username' && value.toString() == username)) {
-        getUsername = value.toString();
+      if ((key == 'email' && value.toString() == email)) {
+        getEmail = value.toString();
       }
 
       if ((key == 'password' && value.toString() == password)) {
@@ -61,7 +86,7 @@ class LoginSignProvider with ChangeNotifier {
       }
     });
 
-    if (getUsername != null && getPassword != null) {
+    if (getEmail != null && getPassword != null) {
       decision = true;
     }
 

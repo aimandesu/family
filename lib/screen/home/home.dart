@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
     return StreamBuilder<List<Map<String, dynamic>>>(
         stream: Provider.of<PostProvider>(context).readPost(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             // final user = snapsot.data;
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -122,7 +122,7 @@ class Home extends StatelessWidget {
             );
           } else {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Text("No post has been made so far"),
             );
           }
         });

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/post_models.dart';
 
 class PostProvider with ChangeNotifier {
-  List<PostModel> _posts = [];
+  final List<PostModel> _posts = [];
 
   List<PostModel> get posts {
     return [..._posts];
