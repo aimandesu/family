@@ -1,10 +1,12 @@
 // import 'dart:convert';
 // import 'dart:ffi';
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 
 class ChatProvider with ChangeNotifier {
   Stream<List<Map<String, dynamic>>> readMessage() => FirebaseFirestore.instance
@@ -43,7 +45,7 @@ class ChatProvider with ChangeNotifier {
   // }
 
   void sendMessage(
-    // String username,
+    String username,
     // String usernameTo,
     String doc,
     String token,
@@ -88,41 +90,41 @@ class ChatProvider with ChangeNotifier {
 
     final putLast = FirebaseFirestore.instance
         .collection('chat')
-        .doc(doc)
+        .doc(doc) //aimandesuChatWithnamiadesu
         .collection("messages")
         .doc();
 
     putLast.set({
       'text': message,
-      'username': doc,
+      'username': username,
       'createdAt': Timestamp.now(),
       'userUID': userUID,
     });
 
-    // try {
-    //   await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-    //       headers: <String, String>{
-    //         'Content-Type': 'application/json',
-    //         'Authorization':
-    //             'key=AAAArMJ76Nw:APA91bHkk4vQ4pqiFQUmwTPt9-pe-WU2jI1NFsWelhgfmqHyTv2V2-HIzF2irImg86HPJcGGL-DKLl_cUWAb4LzxzgCQ6weU9EXTHUEIcbYmZVed98zqXjvelGGv3-SI7Mw0U8EfTlbg'
-    //       },
-    //       body: jsonEncode(<String, dynamic>{
-    //         'priority': 'high',
-    //         'data': <String, dynamic>{
-    //           'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-    //           'status': 'done',
-    //           'body': message,
-    //           'title': 'new message',
-    //         },
-    //         "notification": <String, dynamic>{
-    //           "title": 'new message',
-    //           "body": message,
-    //           "android channel id": "dbmessage",
-    //         },
-    //         "to": token,
-    //       }));
-    // } catch (e) {
-    //   print("e on chat_provider: $e");
-    // }
+    try {
+      await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization':
+                'key=AAAArMJ76Nw:APA91bHkk4vQ4pqiFQUmwTPt9-pe-WU2jI1NFsWelhgfmqHyTv2V2-HIzF2irImg86HPJcGGL-DKLl_cUWAb4LzxzgCQ6weU9EXTHUEIcbYmZVed98zqXjvelGGv3-SI7Mw0U8EfTlbg'
+          },
+          body: jsonEncode(<String, dynamic>{
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'body': message,
+              'title': 'new message',
+            },
+            "notification": <String, dynamic>{
+              "title": 'new message',
+              "body": message,
+              "android channel id": "dbmessage",
+            },
+            "to": token,
+          }));
+    } catch (e) {
+      // print("e on chat_provider: $e");
+    }
   }
 }

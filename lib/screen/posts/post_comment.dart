@@ -1,8 +1,9 @@
+import 'package:family/screen/posts/commentReply/comment_reply.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../providers/post_provider.dart';
+import '../../providers/comment_provider.dart';
 
 class PostComment extends StatefulWidget {
   final DateTime dateTime;
@@ -21,8 +22,15 @@ class PostComment extends StatefulWidget {
 class _PostCommentState extends State<PostComment> {
   bool isExpanded = false;
   bool isPostOpen = false;
+  bool isOpenReply = false;
   int width = 630;
+
+  // List<dynamic> replies = [];
+  String doc = "";
+  String repliesDoc = "";
   final PanelController _pc = PanelController();
+  final commentController = TextEditingController();
+  String enteredComment = "";
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class _PostCommentState extends State<PostComment> {
       left: 0,
       right: 0,
       child: SlidingUpPanel(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.primary,
         backdropTapClosesPanel: false,
         defaultPanelState:
             size.width > width ? PanelState.OPEN : PanelState.CLOSED,
@@ -53,8 +61,9 @@ class _PostCommentState extends State<PostComment> {
               onPressed: () => _pc.open(),
               icon: isExpanded
                   ? Container()
-                  : const Icon(
+                  : Icon(
                       Icons.comment,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
             ),
           ],
@@ -90,16 +99,23 @@ class _PostCommentState extends State<PostComment> {
                       // height: size.height * 0.05,
                       child: IconButton(
                         onPressed: () {
-                          _pc.close();
-                          setState(() {
-                            isPostOpen = false;
-                          });
+                          if (isOpenReply) {
+                            // print("yes");
+                            setState(() {
+                              isOpenReply = !isOpenReply;
+                              // replies = [];
+                            });
+                          } else {
+                            _pc.close();
+                            setState(() {
+                              isPostOpen = false;
+                            });
+                          }
                         },
                         icon: size.width > width
                             ? const Icon(null)
-                            : const Icon(
-                                Icons.arrow_back_ios,
-                              ),
+                            : Icon(Icons.arrow_back_ios,
+                                color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                   )
@@ -120,46 +136,146 @@ class _PostCommentState extends State<PostComment> {
                             width: size.width > width
                                 ? size.width * 3 / 7 * 0.97
                                 : size.width * 1,
-                            child: FutureBuilder(
-                              future: Provider.of<PostProvider>(context,
+                            child: StreamBuilder(
+                              stream: Provider.of<CommentProvider>(context,
                                       listen: false)
-                                  .readPostIndividual(
+                                  .readComment(
                                       widget.username, widget.dateTime),
                               builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.active) {
+                                  doc = snapshot.data!.first['postID'];
+                                  // repliesDoc = snapshot.data!.first['replyID'];
+                                }
+
                                 if (snapshot.hasData &&
                                     snapshot.data!.first['comment']!.isEmpty) {
-                                  return const Center(
+                                  return Center(
                                     child: Text(
                                       'No comments',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 20,
-                                      ),
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 20,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary),
                                     ),
                                   );
                                 } else if (snapshot.hasData &&
                                     snapshot
                                         .data!.first['comment']!.isNotEmpty) {
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    itemCount:
-                                        snapshot.data!.first['comment']!.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        title: Text(
-                                          snapshot
-                                              .data!.first['comment']![index],
-                                          style: const TextStyle(),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  return !isOpenReply
+                                      // && replies.isEmpty
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          itemCount: snapshot
+                                              .data!.first['comment']!.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title: Text(
+                                                snapshot.data!.first[
+                                                        'comment']![index]
+                                                    ['username'],
+                                              ),
+                                              subtitle: Text(
+                                                snapshot.data!.first[
+                                                        'comment']![index]
+                                                    ['comment'],
+                                                style: const TextStyle(),
+                                              ),
+                                              trailing: TextButton(
+                                                onPressed: () {
+                                                  // final reply = snapshot.data!
+                                                  //         .first['comment']![
+                                                  //     index]['reply'];
+                                                  repliesDoc = snapshot.data!
+                                                          .first['comment']![
+                                                      index]['replyID'];
+                                                  // print(repliesDoc);
+
+                                                  setState(() {
+                                                    // replies = reply;
+
+                                                    isOpenReply = !isOpenReply;
+                                                  });
+
+                                                  // print(snapshot.data!
+                                                  //         .first['comment']![index]
+                                                  //     ['reply']);
+                                                  // Navigator.of(context)
+                                                  //     .pushNamed(
+                                                  //         CommentReply
+                                                  //             .routeName,
+                                                  //         arguments: reply);
+                                                },
+                                                child: SizedBox(
+                                                  width: size.width * 0.13,
+                                                  child: Row(
+                                                    children: const [
+                                                      Text(
+                                                        "1",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      Text(
+                                                        " • reply",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : CommentReply(
+                                          postDoc: doc, repliesDoc: repliesDoc);
                                 } else {
                                   return const Center(
                                     child: CircularProgressIndicator(),
                                   );
                                 }
+
+                                // if (snapshot.hasData &&
+                                //     snapshot.data!.first['comment']!.isEmpty) {
+                                //   return Center(
+                                //     child: Text(
+                                //       'No comments',
+                                //       style: TextStyle(
+                                //           fontWeight: FontWeight.bold,
+                                //           fontStyle: FontStyle.italic,
+                                //           fontSize: 20,
+                                //           color: Theme.of(context)
+                                //               .colorScheme
+                                //               .onPrimary),
+                                //     ),
+                                //   );
+                                // } else if (snapshot.hasData &&
+                                //     snapshot
+                                //         .data!.first['comment']!.isNotEmpty) {
+                                //   return ListView.builder(
+                                //     padding: EdgeInsets.zero,
+                                //     itemCount:
+                                //         snapshot.data!.first['comment']!.length,
+                                //     itemBuilder: (context, index) {
+                                //       return ListTile(
+                                //         title: Text(
+                                //           snapshot
+                                //               .data!.first['comment']![index],
+                                //           style: const TextStyle(),
+                                //         ),
+                                //       );
+                                //     },
+                                //   );
+                                // } else {
+                                //   return const Center(
+                                //     child: CircularProgressIndicator(),
+                                //   );
+                                // }
                               },
                             ),
                           ),
@@ -189,27 +305,50 @@ class _PostCommentState extends State<PostComment> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: SizedBox(
+                            child: Container(
+                              height: size.height * 1,
+                              padding: const EdgeInsets.only(top: 5, left: 5),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
+                              ),
                               // width: size.width * 0.9,
-                              child: TextFormField(
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface),
-                                decoration: InputDecoration.collapsed(
-                                  hintStyle: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
+                              child: TextField(
+                                controller: commentController,
+                                style: const TextStyle(color: Colors.black),
+                                decoration: const InputDecoration.collapsed(
+                                  hintStyle: TextStyle(color: Colors.black),
                                   hintText: "Comment",
                                 ),
                                 maxLines: null,
+                                onChanged: (value) {
+                                  setState(() {
+                                    enteredComment = value;
+                                  });
+                                },
                               ),
                             ),
                           ),
-                          const IconButton(
-                            onPressed: null,
-                            icon: Icon(
+                          IconButton(
+                            onPressed: enteredComment.trim().isEmpty
+                                ? null
+                                : () {
+                                    // final comment = commentController.text;
+
+                                    Provider.of<CommentProvider>(context,
+                                            listen: false)
+                                        .addComment(
+                                      enteredComment,
+                                      isOpenReply,
+                                      doc,
+                                      repliesDoc,
+                                    );
+
+                                    commentController.clear();
+                                  },
+                            icon: const Icon(
                               Icons.send,
                             ),
                           ),

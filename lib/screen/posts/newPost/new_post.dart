@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/models/post_models.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +21,7 @@ class NewPost extends StatefulWidget {
 class _NewPostState extends State<NewPost> {
   final _form = GlobalKey<FormState>();
   final statusController = TextEditingController();
-
+  String username = "";
   List<File>? _takePhoto = [];
 
   Future<void> _takePicture() async {
@@ -46,6 +48,15 @@ class _NewPostState extends State<NewPost> {
     Navigator.of(context).pop();
   }
 
+  void getUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get();
+    username = userData['username'];
+  }
+
   // Future<void> _selectPicture() async {}
 
   @override
@@ -54,9 +65,15 @@ class _NewPostState extends State<NewPost> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var postModel = PostModel(
-      username: 'aiman',
+      username: username,
       dateTime: DateTime.now(),
       status: statusController.text,
       image: _takePhoto,
@@ -67,6 +84,8 @@ class _NewPostState extends State<NewPost> {
 
     void newPost() {
       final postProvider = Provider.of<PostProvider>(context, listen: false);
+      //we find user this post belogns to
+
       postProvider.createPost(postModel);
       Navigator.of(context).pop();
     }
@@ -91,20 +110,23 @@ class _NewPostState extends State<NewPost> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         "Status",
                         style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20,
                         ),
                       ),
                       SingleChildScrollView(
                         child: Container(
+                          padding: const EdgeInsets.only(top: 5),
                           constraints: BoxConstraints(
                             maxHeight: size.height * 0.075,
                           ),
                           child: TextFormField(
                             controller: statusController,
-                            style: const TextStyle(),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
                             maxLines: null,
                             textAlign: TextAlign.justify,
                             decoration:
@@ -126,7 +148,10 @@ class _NewPostState extends State<NewPost> {
                     ? IconButton(
                         iconSize: size.height * 0.2,
                         onPressed: _takePicture,
-                        icon: const Icon(Icons.photo),
+                        icon: Icon(
+                          Icons.photo,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       )
                     : ListView.builder(
                         itemCount: _takePhoto!.length,
@@ -179,7 +204,12 @@ class _NewPostState extends State<NewPost> {
               child: Container(
                 margin: const EdgeInsets.all(10),
                 width: size.width * 1,
-                color: Theme.of(context).colorScheme.primary,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(25),
+                  ),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -188,21 +218,33 @@ class _NewPostState extends State<NewPost> {
                       children: [
                         IconButton(
                           onPressed: _takePicture,
-                          icon: const Icon(Icons.camera),
+                          icon: Icon(
+                            Icons.camera,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
-                        const IconButton(
+                        IconButton(
                           onPressed: null,
-                          icon: Icon(Icons.map),
+                          icon: Icon(
+                            Icons.map,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.photo),
+                          icon: Icon(
+                            Icons.photo,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       ],
                     ),
                     IconButton(
                       onPressed: newPost,
-                      icon: const Icon(Icons.post_add),
+                      icon: Icon(
+                        Icons.post_add,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ],
                 ),

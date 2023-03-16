@@ -18,6 +18,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -27,7 +28,9 @@ class MessageBubble extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: isMe ? Colors.red : Colors.green,
+                color: isMe
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(12),
                   topRight: const Radius.circular(12),
@@ -39,7 +42,7 @@ class MessageBubble extends StatelessWidget {
                       : const Radius.circular(12),
                 ),
               ),
-              width: 140,
+              width: size.width * 0.45,
               padding: const EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 15,
@@ -49,22 +52,25 @@ class MessageBubble extends StatelessWidget {
                 horizontal: 8,
               ),
               child: Column(
-                crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     username,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: isMe ? Colors.amber : Colors.white,
+                      color: isMe
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Colors.white,
                     ),
                   ),
                   Text(
                     message,
                     style: TextStyle(
-                      color: isMe ? Colors.amber : Colors.white,
+                      color: isMe
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Colors.white,
                     ),
-                    textAlign: isMe ? TextAlign.end : TextAlign.start,
+                    textAlign: TextAlign.start,
                   ),
                 ],
               ),

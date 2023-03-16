@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -40,10 +41,19 @@ class PostProvider with ChangeNotifier {
     } catch (e) {
       // print(e);
     } finally {
-      final userPost = FirebaseFirestore.instance.collection('post').doc();
+      final userPost = FirebaseFirestore.instance.collection('post');
 
       final json = postModel.toJson(imageFileUrl);
-      await userPost.set(json);
+      await userPost.add(json).then((value) => userPost.doc(value.id).update({
+            "postID": value.id,
+          }));
+
+      // var collection = FirebaseFirestore.instance.collection('test');
+      // var docRef = await collection.add({
+      //   "test": 'bruh',
+      // });
+      // var documentId = docRef.id;
+      // print(documentId);
     }
 
     notifyListeners();
@@ -58,10 +68,28 @@ class PostProvider with ChangeNotifier {
     return posts;
   }
 
-  Stream<List<Map<String, dynamic>>> readPost() => FirebaseFirestore.instance
-      .collection('post')
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  Future<String> getUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get();
+
+    return userData['username'];
+  }
+
+  Stream<List<Map<String, dynamic>>> readPost() async* {
+    //there is async* and yield* or yield
+    // print("here:$username");
+
+    // final username = await getUser();
+
+    yield* FirebaseFirestore.instance
+        .collection('post')
+        // .where("username", isNotEqualTo: username)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  }
 
   PostModel fetchPostIndividual(DateTime dateTime) {
     return posts.firstWhere((element) => element.dateTime == dateTime);
@@ -81,11 +109,14 @@ class PostProvider with ChangeNotifier {
     return posts.firstWhere((element) => element.dateTime == dateTime);
   }
 
-  Future<List<Map<String, dynamic>>> readOwnPost() => FirebaseFirestore.instance
-      .collection('post')
-      .where('username', isEqualTo: 'aiman')
-      .get()
-      .then((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  Future<List<Map<String, dynamic>>> readOwnPost() async {
+    final username = await getUser();
+    return FirebaseFirestore.instance
+        .collection('post')
+        .where('username', isEqualTo: username)
+        .get()
+        .then((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  }
   // .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
   void removePost(PostModel postModel) {

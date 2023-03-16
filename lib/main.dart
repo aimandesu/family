@@ -8,12 +8,16 @@ import 'package:family/screen/main/main_screen.dart';
 import 'package:family/screen/posts/newPost/new_post.dart';
 import 'package:family/screen/posts/posts.dart';
 import 'package:family/screen/profile/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+import 'providers/comment_provider.dart';
+import 'screen/search/search.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -21,21 +25,58 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   //idk whats the point of this
 }
 
-Future main() async {
+Future<bool> getTheme() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('UserTheme') ?? false;
+}
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  final themeColor = await getTheme();
+  // print(themeColor);
+  runApp(MyApp(
+    isDark: themeColor,
+  ));
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await FirebaseMessaging.instance.getInitialMessage();
+
+  // await SharedPreferences.getInstance();
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
   //   statusBarColor: Colors.transparent,
   // ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+//ignore: must_be_immutable
+class MyApp extends StatefulWidget {
+  bool isDark;
+  MyApp({super.key, required this.isDark});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  // SharedPreferences? prefs;
+  // bool changeColor = false;
+
+  Brightness dark = Brightness.dark;
+
+  void changeTheme() async {
+    setState(() {
+      widget.isDark = !widget.isDark;
+    });
+    await saveUserTheme(widget.isDark);
+    // print(changeColor);
+  }
+
+  Future<void> saveUserTheme(bool chosenTheme) async {
+    //
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('UserTheme', chosenTheme);
+  }
 
   // This widget is the root of your application.
   @override
@@ -50,16 +91,19 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (ctx) => ChatProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => CommentProvider(),
         )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: const ColorScheme(
-            brightness: Brightness.dark,
-            primary: Colors.orange,
-            onPrimary: Colors.blue,
-            secondary: Colors.transparent,
+          colorScheme: ColorScheme(
+            brightness: widget.isDark ? dark : Brightness.light,
+            primary: Colors.pink,
+            onPrimary: Colors.white,
+            secondary: Colors.purple,
             onSecondary: Colors.pink,
             error: Colors.red,
             onError: Colors.green,
@@ -70,14 +114,26 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: const Login(),
+        home: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return const MainScreen();
+              } else {
+                return Login(
+                  changeTheme: changeTheme,
+                );
+              }
+            }),
         routes: {
           Profile.routeName: (context) => const Profile(),
-          MainScreen.routeName: (context) => const MainScreen(),
-          Posts.routeName: (context) => const Posts(),
-          NewPost.routeName: (context) => const NewPost(),
+          // MainScreen.routeName: (context) => const MainScreen(),
           Chat.routeName: (context) => const Chat(),
           ChatTarget.routeName: (context) => const ChatTarget(),
+          Posts.routeName: (context) => const Posts(),
+          NewPost.routeName: (context) => const NewPost(),
+          Search.routeName: (context) => const Search(),
+          // CommentReply.routeName: (context) => const CommentReply(),
         },
       ),
     );

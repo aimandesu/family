@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NewMessage extends StatefulWidget {
-  // final String username;
+  final String username;
   // final String usernameTo;
   final String doc;
   final String token;
   final String userUID;
   const NewMessage({
     super.key,
-    // required this.username,
+    required this.username,
     // required this.usernameTo,
     required this.doc,
     required this.token,
@@ -29,7 +29,13 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+              width: 1.5, color: Theme.of(context).colorScheme.primary),
+        ),
+      ),
+      // margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
@@ -46,16 +52,22 @@ class _NewMessageState extends State<NewMessage> {
           IconButton(
               onPressed: _enteredMessage.trim().isEmpty
                   ? null
-                  : () => Provider.of<ChatProvider>(context, listen: false)
+                  : () {
+                      Provider.of<ChatProvider>(context, listen: false)
                           .sendMessage(
-                        // widget.username,
+                        widget.username,
                         // widget.usernameTo,
                         widget.doc,
                         widget.token,
                         _enteredMessage,
                         widget.userUID,
-                      ),
-              icon: const Icon(Icons.send))
+                      );
+                      _controller.clear();
+                    },
+              icon: Icon(
+                Icons.send,
+                color: Theme.of(context).colorScheme.primary,
+              ))
         ],
       ),
     );

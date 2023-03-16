@@ -15,26 +15,51 @@ class ChatTarget extends StatefulWidget {
 }
 
 class _ChatTargetState extends State<ChatTarget> {
+  // final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     requestPermission();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   scrollToBottom();
+    // });
     initInfo();
   }
 
+  // void scrollToBottom() {
+  //   Future.delayed(const Duration(milliseconds: 200)).then((_) {
+  //     if (!_scrollController.hasClients) return;
+  //     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  //   });
+  // }
+
   void initInfo() {
     // onmessage
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {});
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // print('Got a message whilst in the foreground!');
+      // print('Message title: ${message.notification!.title}');
+      // print('Message info: ${message.notification!.body}');
+
+      // if (message.notification != null) {
+      //   print('Message also contained a notification: ${message.notification}');
+      // }
+    });
 
     //on launch and onresume replacement
     //on resume when tap on notification
     //on kill when the background app not active, it promps
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // print('got message onmessageopenedApp ${message.data}');
+      // print('Message title: ${message.notification!.title}');
+      // print('Message info: ${message.notification!.body}');
+    });
   }
 
   void requestPermission() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+    // NotificationSettings settings =
     await messaging.requestPermission(
       alert: true,
       announcement: true,
@@ -44,36 +69,53 @@ class _ChatTargetState extends State<ChatTarget> {
       provisional: false,
       sound: true,
     );
+
+    // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    //   print('User granted permission');
+    // } else if (settings.authorizationStatus ==
+    //     AuthorizationStatus.provisional) {
+    //   print('User granted provisional permission');
+    // } else {
+    //   print('User declined or has not accepted permission');
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Size size = MediaQuery.of(context).size;
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final token = routeArgs['token'];
     final doc = routeArgs['doc'];
 
-    // final usernameTo = routeArgs['usernameTo'];
-    // final username = routeArgs['username'];
+    final usernameTo = routeArgs['usernameTo'];
+    final username = routeArgs['username'];
     final userUID = routeArgs['userUID'];
+    // print("token:$token");
     // print('chat/$username-$usernameTo-chat/message');
     //nanti sini akan ada send message part yg need to use chat provider
     return Scaffold(
       body: Column(
         children: [
+          AppBar(
+            title: Text(
+              usernameTo,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection("chat/$doc/messages")
-                  .orderBy('createdAt', descending: false)
+                  .orderBy('createdAt', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Container();
                 } else {
                   return ListView.builder(
+                    reverse: true,
+                    // controller: _scrollController,
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       return MessageBubble(
@@ -88,7 +130,7 @@ class _ChatTargetState extends State<ChatTarget> {
             ),
           ),
           NewMessage(
-            // username: username,
+            username: username,
             // usernameTo: usernameTo,
             doc: doc,
             token: token,

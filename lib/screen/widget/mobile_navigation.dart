@@ -1,9 +1,9 @@
-import 'package:family/screen/main/main_screen.dart';
 import 'package:family/screen/posts/newPost/new_post.dart';
 import 'package:family/screen/profile/profile.dart';
 import 'package:flutter/material.dart';
 
 import '../chat/chat.dart';
+import '../search/search.dart';
 
 class MobileNavigation extends StatelessWidget {
   const MobileNavigation({
@@ -29,27 +29,36 @@ class MobileNavigation extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(MainScreen.routeName);
+                Navigator.of(context).pushNamed(Search.routeName);
               },
-              icon: const Icon(Icons.feed),
+              icon: const Icon(Icons.search),
             ),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(NewPost.routeName);
               },
-              icon: const Icon(Icons.post_add),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(Profile.routeName);
-              },
-              icon: const Icon(Icons.people),
+              icon: Icon(
+                Icons.post_add,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(Chat.routeName);
               },
-              icon: const Icon(Icons.message),
+              icon: Icon(
+                Icons.message,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(Profile.routeName);
+              },
+              icon: Icon(
+                Icons.people,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ],
         ),

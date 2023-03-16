@@ -59,37 +59,38 @@ class LoginSignProvider with ChangeNotifier {
     return userAvailable.exists;
   }
 
-  Future<bool> loginUser(String email, String password) async {
+  void loginUser(String email, String password) async {
     if (email == '' && password == '') {
-      return false;
+      return;
     }
 
-    UserCredential userCredential;
+    // UserCredential userCredential;
 
-    userCredential = await _auth.signInWithEmailAndPassword(
+    // userCredential =
+    await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
 
-    bool decision = false;
-    String? getEmail;
-    String? getPassword;
-    final collectionUser = FirebaseFirestore.instance.collection('user');
-    final eachUser = await collectionUser.doc(userCredential.user!.uid).get();
-    eachUser.data()?.forEach((key, value) {
-      if ((key == 'email' && value.toString() == email)) {
-        getEmail = value.toString();
-      }
+    //   bool decision = false;
+    //   String? getEmail;
+    //   String? getPassword;
+    //   final collectionUser = FirebaseFirestore.instance.collection('user');
+    //   final eachUser = await collectionUser.doc(userCredential.user!.uid).get();
+    //   eachUser.data()?.forEach((key, value) {
+    //     if ((key == 'email' && value.toString() == email)) {
+    //       getEmail = value.toString();
+    //     }
 
-      if ((key == 'password' && value.toString() == password)) {
-        getPassword = value.toString();
-      }
-    });
+    //     if ((key == 'password' && value.toString() == password)) {
+    //       getPassword = value.toString();
+    //     }
+    //   });
 
-    if (getEmail != null && getPassword != null) {
-      decision = true;
-    }
+    //   if (getEmail != null && getPassword != null) {
+    //     decision = true;
+    //   }
 
-    return decision;
+    //   return decision;
   }
 }

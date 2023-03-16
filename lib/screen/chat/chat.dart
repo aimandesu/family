@@ -12,6 +12,7 @@ class Chat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    Size size = MediaQuery.of(context).size;
     var appBar2 = AppBar();
 
     final paddingTop = appBar2.preferredSize.height + mediaQuery.padding.top;
@@ -59,12 +60,13 @@ class Chat extends StatelessWidget {
       // return toSend;
     }
 
-    void navigateRoute(String token, String doc, String userUID) {
+    void navigateRoute(String token, String doc, String usernameTo,
+        String username, String userUID) {
       Navigator.of(context).pushNamed(ChatTarget.routeName, arguments: {
         'token': token,
         'doc': doc,
-        // 'usernameTo': usernameTo,
-        // 'username': username,
+        'usernameTo': usernameTo,
+        'username': username,
         'userUID': userUID,
       });
     }
@@ -84,17 +86,21 @@ class Chat extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: (mediaQuery.size.height - paddingTop) * 0.05,
+                  Container(
+                    // color: Colors.blue,
+                    padding: const EdgeInsets.all(10),
+                    height: (mediaQuery.size.height - paddingTop) * 0.08,
+                    width: size.width * 1,
                     child: const Text(
                       'Friends List',
                       textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                   SizedBox(
-                    height: (mediaQuery.size.height - paddingTop) * 0.95,
+                    height: (mediaQuery.size.height - paddingTop) * 0.92,
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
@@ -105,11 +111,19 @@ class Chat extends StatelessWidget {
                           margin: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Colors.red,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           child: ListTile(
-                            leading: const Icon(Icons.offline_pin),
-                            title: Text(snapshot.data![index]['username']),
+                            leading: Icon(
+                              Icons.offline_pin,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            title: Text(
+                              snapshot.data![index]['username'],
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
                             onTap: () async {
                               username = await userData();
                               userUID = await userDataUID();
@@ -117,9 +131,9 @@ class Chat extends StatelessWidget {
                                 snapshot.data![index]['token'],
                                 await findChatAvailable(username,
                                     snapshot.data![index]['username']),
-                                // snapshot.data![index]
-                                //     ['username'], //this is usernameTo
-                                // username,
+                                snapshot.data![index]
+                                    ['username'], //this is usernameTo
+                                username,
                                 userUID,
                               );
                               // print(snapshot.data![index]['token']);

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/screen/posts/posts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +16,14 @@ class Profile extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          IconButton(onPressed: null, icon: Icon(Icons.settings))
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.logout),
+          )
         ],
       ),
       body: Column(
@@ -61,14 +68,16 @@ class Profile extends StatelessWidget {
                       padding: const EdgeInsets.all(15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             "About You",
-                            style: TextStyle(),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
                           ),
                           Text(
                             "Hey this is me ",
-                            style: TextStyle(),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
                           ),
                         ],
                       ),

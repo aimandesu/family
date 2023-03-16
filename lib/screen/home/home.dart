@@ -3,21 +3,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/providers/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../posts/posts.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
-  // List<PostModel> _newPostsIncoming(BuildContext context) {
-  //   final postProvider = Provider.of<PostProvider>(context);
-  //   return postProvider.fetchPosts();
-  // }
+  @override
+  State<Home> createState() => _HomeState();
+}
 
-  // List<PostModel> _retrievePostClicked(BuildContext context) {
-  //   final postProvider = Provider.of<PostProvider>(context, listen: false);
-  //   return postProvider.fetchPosts();
-  // }
+class _HomeState extends State<Home> {
+  // List<PostModel> _newPostsIncoming(BuildContext context) {
+  bool? isTheColorDark;
+
+  Future<void> isDark() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    isTheColorDark = pref.getBool(
+        "UserTheme"); //maybe kena setstate if dia boleh auto change from menu?
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isDark();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,64 +42,88 @@ class Home extends StatelessWidget {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(1),
                   decoration: BoxDecoration(
-                    // color: Colors.blue.shade900,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
+                    color: isTheColorDark != null && isTheColorDark == true
+                        ? const Color.fromARGB(255, 31, 29, 29)
+                        : Colors.white,
+                    border: Border(
+                      top: BorderSide(
+                        width: 1,
+                        color: isTheColorDark != null && isTheColorDark == true
+                            ? Theme.of(context).colorScheme.surface
+                            : Theme.of(context).colorScheme.primary,
                       ),
-                    ],
+                    ),
+
+                    // borderRadius: const BorderRadius.all(
+                    //   Radius.circular(25),
+                    // ),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.black.withOpacity(0.5),
+                    //     spreadRadius: 5,
+                    //     blurRadius: 7,
+                    //     offset:
+                    //         const Offset(0, 3), // changes position of shadow
+                    //   ),
+                    // ],
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // SizedBox(
+                      //   //outside box
+                      //   // height: size.height * 0.5,
+                      //   width: size.width * 1,
+                      // margin: const EdgeInsets.all(5),
+                      // child:
                       Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Text(
-                          // _newPostsIncoming(context)[index].status.toString(),
-                          snapshot.data![index]['status'],
-                          style: const TextStyle(
-                              // color: Colors.white,
-                              ),
-                        ),
-                      ),
-                      SizedBox(
-                        //outside box
-                        height: size.height * 0.5,
-                        width: size.width * 1,
-                        // margin: const EdgeInsets.all(5),
-                        child: FittedBox(
-                          fit: size.width < 550 ? BoxFit.fill : BoxFit.contain,
-                          child: SizedBox(
-                            height: size.height * 0.5,
-                            width: size.width * 1,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: (snapshot.data![index]['image']
-                                      as List<dynamic>)
-                                  .length,
-                              // itemCount: _newPostsIncoming(context)[index]
-                              //     .image!
-                              //     .length, //this loop how many picture in posts structure
-                              itemBuilder: (context, i) {
-                                //this one will loop how many times the picture is available
-                                return Image(
-                                  width: size.width * 1,
-                                  image: NetworkImage(
-                                    snapshot.data![index]['image'][i],
-                                  ),
-                                  // image: FileImage(
-                                  //     _newPostsIncoming(context)[index].image![i]),
-                                );
-                              },
+                        padding: const EdgeInsets.all(10),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            // _newPostsIncoming(context)[index].status.toString(),
+                            snapshot.data![index]['status'],
+                            style: TextStyle(
+                              color: isTheColorDark != null &&
+                                      isTheColorDark == true
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
                       ),
+                      FittedBox(
+                        fit: size.width < 550 ? BoxFit.fill : BoxFit.contain,
+                        child: SizedBox(
+                          // color: Colors.blue,
+                          height: size.height * 0.4,
+                          width: size.width * 1,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: (snapshot.data![index]['image']
+                                    as List<dynamic>)
+                                .length,
+                            // itemCount: _newPostsIncoming(context)[index]
+                            //     .image!
+                            //     .length, //this loop how many picture in posts structure
+                            itemBuilder: (context, i) {
+                              //this one will loop how many times the picture is available
+                              return Image(
+                                width: size.width * 1,
+                                image: NetworkImage(
+                                  snapshot.data![index]['image'][i],
+                                ),
+                                // image: FileImage(
+                                //     _newPostsIncoming(context)[index].image![i]),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                      // ),
                       Row(
                         children: [
                           IconButton(
@@ -104,9 +139,12 @@ class Home extends StatelessWidget {
                                 // _retrievePostClicked(context)[index].status,
                               });
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.comment,
-                              // color: Colors.white,
+                              color: isTheColorDark != null &&
+                                      isTheColorDark == true
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ],
