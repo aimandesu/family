@@ -117,6 +117,7 @@ class _MyAppState extends State<MyApp> {
         home: StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
+              // return const SignUp();
               if (snapshot.hasData) {
                 return const MainScreen();
               } else {
@@ -133,6 +134,7 @@ class _MyAppState extends State<MyApp> {
           Posts.routeName: (context) => const Posts(),
           NewPost.routeName: (context) => const NewPost(),
           Search.routeName: (context) => const Search(),
+          // SignUp.routeName: (context) => const SignUp(),
           // CommentReply.routeName: (context) => const CommentReply(),
         },
       ),

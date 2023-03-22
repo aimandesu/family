@@ -26,13 +26,13 @@ class PostProvider with ChangeNotifier {
     List<String> imageFileUrl = [];
 
     Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDirectory = referenceRoot.child('post/');
+    Reference referenceDirectory = referenceRoot.child('$pathToTake/');
 
     try {
       for (int i = 0; i < postModel.image!.length; i++) {
         // String filePathName = postModel.image![i].path;
         Reference referenceImageToUpload =
-            referenceDirectory.child('$pathToTake/$dateTimePost/$i');
+            referenceDirectory.child('post/$dateTimePost/$i');
         await referenceImageToUpload.putFile(postModel.image![i]);
         final urlImages = await referenceImageToUpload.getDownloadURL();
         imageFileUrl.add(urlImages);

@@ -29,8 +29,8 @@ class _CommentReplyState extends State<CommentReply> {
 
     return SizedBox(
       height: size.height * 0.3,
-      child: FutureBuilder(
-        future: Provider.of<CommentProvider>(context, listen: false)
+      child: StreamBuilder(
+        stream: Provider.of<CommentProvider>(context, listen: false)
             .fetchReplies(widget.postDoc, widget.repliesDoc),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.first['reply']!.isEmpty) {

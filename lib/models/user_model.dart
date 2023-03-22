@@ -6,16 +6,17 @@ class UserModel {
   String password;
   String token;
   String image;
+  String about;
 
-  UserModel({
-    required this.userUID,
-    required this.username,
-    required this.email,
-    required this.name,
-    required this.password,
-    required this.token,
-    required this.image,
-  });
+  UserModel(
+      {required this.userUID,
+      required this.username,
+      required this.email,
+      required this.name,
+      required this.password,
+      required this.token,
+      required this.image,
+      required this.about});
 
   Map<String, dynamic> toJson() => {
         'userUID': userUID,
@@ -25,5 +26,6 @@ class UserModel {
         'password': password,
         'token': token,
         'image': image,
+        'about': about,
       };
 }

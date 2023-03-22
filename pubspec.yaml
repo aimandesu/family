@@ -46,6 +46,8 @@ dependencies:
   firebase_auth: ^4.2.10
   http: ^0.13.5
   shared_preferences: ^2.0.18
+  camera: ^0.10.3+2
+  photo_manager: ^2.5.2
 
 dev_dependencies:
   flutter_test:

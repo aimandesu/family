@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignProvider with ChangeNotifier {
@@ -11,6 +14,9 @@ class LoginSignProvider with ChangeNotifier {
     String username, //should be from firebase
     String email,
     String password,
+    File imageFile,
+    String name,
+    String about,
   ) async {
     UserCredential userCredential;
     String? token;
@@ -30,25 +36,41 @@ class LoginSignProvider with ChangeNotifier {
     //   return true;
     // }
 
-    final user = UserModel(
-      userUID: userCredential.user!.uid,
-      username: username,
-      email: email,
-      name: '',
-      password: password,
-      token: token as String,
-      image: '',
-    );
+    String pathToTake = username;
+    String urlImage = "";
 
-    final json = user.toJson();
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirectory = referenceRoot.child('$pathToTake/');
 
+    try {
+      Reference referenceImageToUpload =
+          referenceDirectory.child('profile/$pathToTake-profile');
+      await referenceImageToUpload.putFile(imageFile);
+      urlImage = await referenceImageToUpload.getDownloadURL();
+    } catch (e) {
+      print(e);
+    } finally {
+      final user = UserModel(
+        userUID: userCredential.user!.uid,
+        username: username,
+        email: email,
+        name: name,
+        password: password,
+        token: token as String,
+        image: urlImage,
+        about: about,
+      );
+
+      final json = user.toJson();
+
+      await userSignUp.set(json);
+    }
     // final json = {
     //   'username': username,
     //   'email': email,
     //   'password': password,
     // };
 
-    await userSignUp.set(json);
     // return false;
   }
 

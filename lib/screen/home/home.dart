@@ -54,6 +54,12 @@ class _HomeState extends State<Home> {
                             ? Theme.of(context).colorScheme.surface
                             : Theme.of(context).colorScheme.primary,
                       ),
+                      bottom: BorderSide(
+                        width: 1,
+                        color: isTheColorDark != null && isTheColorDark == true
+                            ? Theme.of(context).colorScheme.surface
+                            : Theme.of(context).colorScheme.primary,
+                      ),
                     ),
 
                     // borderRadius: const BorderRadius.all(

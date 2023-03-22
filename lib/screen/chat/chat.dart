@@ -99,51 +99,54 @@ class Chat extends StatelessWidget {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  SizedBox(
-                    height: (mediaQuery.size.height - paddingTop) * 0.92,
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        // return Container(
-                        //   child: Text(snapshot.data![index]['username']),
-                        // );
-                        return Container(
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.offline_pin,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                  Expanded(
+                    child: SizedBox(
+                      // height: (mediaQuery.size.height - paddingTop) * 0.92,
+                      child: ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          // return Container(
+                          //   child: Text(snapshot.data![index]['username']),
+                          // );
+                          return Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                            title: Text(
-                              snapshot.data![index]['username'],
-                              style: TextStyle(
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.offline_pin,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
+                              title: Text(
+                                snapshot.data![index]['username'],
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                              onTap: () async {
+                                username = await userData();
+                                userUID = await userDataUID();
+                                navigateRoute(
+                                  snapshot.data![index]['token'],
+                                  await findChatAvailable(username,
+                                      snapshot.data![index]['username']),
+                                  snapshot.data![index]
+                                      ['username'], //this is usernameTo
+                                  username,
+                                  userUID,
+                                );
+                                // print(snapshot.data![index]['token']);
+                                // print(snapshot.data![index]['username']);
+                                // print(username);
+                                // print(userUID);
+                              },
                             ),
-                            onTap: () async {
-                              username = await userData();
-                              userUID = await userDataUID();
-                              navigateRoute(
-                                snapshot.data![index]['token'],
-                                await findChatAvailable(username,
-                                    snapshot.data![index]['username']),
-                                snapshot.data![index]
-                                    ['username'], //this is usernameTo
-                                username,
-                                userUID,
-                              );
-                              // print(snapshot.data![index]['token']);
-                              // print(snapshot.data![index]['username']);
-                              // print(username);
-                              // print(userUID);
-                            },
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

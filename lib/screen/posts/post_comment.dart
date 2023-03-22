@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family/screen/posts/commentReply/comment_reply.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -31,6 +33,22 @@ class _PostCommentState extends State<PostComment> {
   final PanelController _pc = PanelController();
   final commentController = TextEditingController();
   String enteredComment = "";
+  String username = "";
+
+  void getUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get();
+    username = userData['username'];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -212,14 +230,19 @@ class _PostCommentState extends State<PostComment> {
                                                 child: SizedBox(
                                                   width: size.width * 0.13,
                                                   child: Row(
-                                                    children: const [
+                                                    children: [
                                                       Text(
-                                                        "1",
-                                                        style: TextStyle(
+                                                        snapshot
+                                                            .data!
+                                                            .first['comment']![
+                                                                index]
+                                                                ['replyCount']
+                                                            .toString(),
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.white),
                                                       ),
-                                                      Text(
+                                                      const Text(
                                                         " • reply",
                                                         style: TextStyle(
                                                             color:
@@ -340,6 +363,7 @@ class _PostCommentState extends State<PostComment> {
                                     Provider.of<CommentProvider>(context,
                                             listen: false)
                                         .addComment(
+                                      username,
                                       enteredComment,
                                       isOpenReply,
                                       doc,
