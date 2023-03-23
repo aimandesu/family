@@ -48,6 +48,7 @@ dependencies:
   shared_preferences: ^2.0.18
   camera: ^0.10.3+2
   photo_manager: ^2.5.2
+  lottie: ^2.3.0
 
 dev_dependencies:
   flutter_test:

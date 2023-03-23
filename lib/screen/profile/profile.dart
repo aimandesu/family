@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:family/providers/profile_provider.dart';
 import 'package:family/screen/posts/posts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,59 +33,73 @@ class Profile extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             width: size.width * 1,
             height: size.height * 0.3,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: Provider.of<ProfileProvider>(context, listen: false)
+                  .fetchProfile(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Row(
                     children: [
-                      Container(
-                        height: size.height * 0.2,
-                        decoration: const BoxDecoration(
-                          // color: Colors.blue,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                "https://picsum.photos/250?image=9"),
-                            fit: BoxFit.fill,
-                          ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: size.height * 0.2,
+                              decoration: BoxDecoration(
+                                // color: Colors.blue,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      snapshot.data!.first['image']),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              snapshot.data!.first['name'] as String,
+                            ),
+                          ],
                         ),
                       ),
-                      const Text(
-                        "Aiman",
-                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "About You",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                                ),
+                                Text(
+                                  snapshot.data!.first['about'],
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
                     ],
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "About You",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary),
-                          ),
-                          Text(
-                            "Hey this is me ",
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
+                  );
+                } else {
+                  return Container();
+                }
+              },
             ),
           ),
           Expanded(

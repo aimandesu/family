@@ -2,6 +2,7 @@ import 'package:family/screen/signup/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 
 class Login extends StatefulWidget {
   final VoidCallback changeTheme;
@@ -99,9 +100,18 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(
-                      height: (mediaQuery.size.height - paddingTop) * 0.9,
+                      // color: Colors.red,
+                      height: (mediaQuery.size.height - paddingTop) * 0.3,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Lottie.network(
+                            'https://assets6.lottiefiles.com/packages/lf20_7psw7qge.json'),
+                      ),
+                    ),
+                    SizedBox(
+                      height: (mediaQuery.size.height - paddingTop) * 0.6,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           isDisplayLogin
                               ? const Text(
