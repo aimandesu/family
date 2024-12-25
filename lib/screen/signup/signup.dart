@@ -259,9 +259,9 @@ class _SignUpState extends State<SignUp> {
             : SizedBox(
                 height: size.height * 1,
                 child: SignUpCamera(
-                  setImage: setImage,
-                  closeCamera: closeCamera,
-                ),
+                    // setImage: setImage,
+                    // closeCamera: closeCamera,
+                    ),
               );
     //   ),
     // )

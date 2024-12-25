@@ -71,9 +71,9 @@ class _PhotoSelectorState extends State<PhotoSelector> {
           items: albums.map((AssetPathEntity albums) {
             return DropdownMenuItem(
               value: albums,
-              child: Text(albums.name == ""
-                  ? '0'
-                  : "${albums.name}(${albums.assetCount})"),
+              child: Text(albums.name == "" ? '0' : ''
+                  // : "${albums.name}(${albums.assetCount})"),
+                  ),
             );
           }).toList(),
           onChanged: (AssetPathEntity? newAlbum) async {
@@ -147,17 +147,19 @@ class _PhotoSelectorState extends State<PhotoSelector> {
   Widget assetMediaWidget(entity) => Stack(
         children: [
           Positioned.fill(
-            child: AssetEntityImage(
-              entity,
-              isOriginal: false,
-              thumbnailSize: const ThumbnailSize.square(250),
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(Icons.error),
-                );
-              },
-            ),
+            child: Text('da'),
+
+            // AssetEntityImage(
+            //   entity,
+            //   isOriginal: false,
+            //   thumbnailSize: const ThumbnailSize.square(250),
+            //   fit: BoxFit.cover,
+            //   errorBuilder: (context, error, stackTrace) {
+            //     return const Center(
+            //       child: Icon(Icons.error),
+            //     );
+            //   },
+            // ),
           ),
         ],
       );
